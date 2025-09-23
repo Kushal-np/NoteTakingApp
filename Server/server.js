@@ -5,6 +5,7 @@ const app = express();
 dotenv.config();
 const PORT = process.env.PORT ; 
 app.use(express.json());
+app.use(cookieParser());
 app.use("/api/auth" , authRoutes)
 
 
