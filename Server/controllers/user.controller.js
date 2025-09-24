@@ -2,37 +2,40 @@ import User from "../model/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-export const registerUser = async(req , res) =>{
-    try{
-        const {name , email , password} = req.body;
+export const registerUser = async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
 
-        const existingUser = await User.findOne({email});
-        if(existingUser){
-            return res.status(401).json({
-                success:false , 
-                message:"User already exists"
-            })
-        } 
-        
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password , salt);
-
-        const user = new User.create({name , email , password:hashedPassword});
-        await user.save();
-
-        res.status(201).json({
-            success:true, 
-            message:"User regsitered successfully"
-        })
-
+    const existingUser = await  User.findOne({email});
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists"
+      });
     }
-    catch(error){
-        return res.status(501).json({
-            success:false ,
-            message:"Internal error occured"
-        })
-    }
-}
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      user
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
 
 
 export const login = async(req , res)=>{
