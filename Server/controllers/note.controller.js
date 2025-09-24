@@ -1,24 +1,32 @@
-import Note from "../model/note.model";
+import Note from "../model/note.model.js";
 
-export const createNote = async(req , res) =>{
-    try{
-        const {title , content , tags} = req.body;
-        const note = await Note.create({
-            title , 
-            content , 
-            tags , 
-            userId: req.user.id,
-        })
-        res.status(201).json({
-            error:"Error creating the note67"
-        })
-    }
-    catch(error){
-        res.status(500).json({
-            error:"error creating note"
-        })
-    }
-}
+export const createNote = async (req, res) => {
+  try {
+    const { title, content, tags } = req.body;
+
+    // Create note
+    const note = await Note.create({
+      title,
+      content,
+      tags,
+      userId: req.user.id
+    });
+
+    // Send success response
+    res.status(201).json({
+      success: true,
+      message: "Note created successfully",
+      note
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error creating note",
+      error: error.message
+    });
+  }
+};
+
 
 export const readNote = async(req, res)=>{
     try{
@@ -62,6 +70,7 @@ export const deleteNote = async(req , res)=>{
     try{
         const {id} = req.params ; 
         const note = await Note.findOneAndDelete({_id:id,userId:req.user.id})
+        console.log(note)
         if(!note){
             return res.status(404).json({
                 error:"Note not found"

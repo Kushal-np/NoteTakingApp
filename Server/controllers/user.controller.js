@@ -62,7 +62,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, username: user.username },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "10h" }
     );
 
     res.cookie("token", token, {
@@ -74,6 +74,7 @@ export const login = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Login successful",
+      token
       
     });
   } catch (error) {
@@ -92,3 +93,4 @@ export const logout = async (req, res) => {
     message: "Logged out successfully"
   });
 };
+
