@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 const SideBar = () => {
   return (
     <aside className="w-[20%] flex justify-center items-center bg-gradient-to-b from-neutral-950 via-zinc-900 to-neutral-950 border-r border-white/10 backdrop-blur-sm shadow-lg shadow-black/40">
-      <div className="h-[90%] w-[90%] flex flex-col justify-between">
+      <div className="h-[100vh] w-[90%] flex flex-col justify-between">
         
         {/* Upper section */}
         <div className="flex flex-col gap-6 items-center mt-10">
-          <Link to="/" className="w-full">
+          <Link to="/Notes" className="w-full">
             <div
               className="w-full py-4 text-zinc-200 text-sm font-light tracking-[0.1em] uppercase 
                          hover:text-white hover:bg-white/10 transition-all duration-300 

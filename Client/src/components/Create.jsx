@@ -3,10 +3,8 @@ import SideBar from './SideBar'
 
 const Create = () => {
   return (
-    <div>
-        <div>
+    <div  className='max-h-[100vh] flex'>
             <SideBar />
-        </div>
         <div>
             <div>Create A New Note</div>
             <div>

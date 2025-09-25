@@ -3,10 +3,8 @@ import SideBar from './SideBar'
 
 const Edit = () => {
   return (
-    <div>
-        <div>
+    <div className='flex h-[100vh]'>
             <SideBar/>
-        </div>
 
         <div>
             <div>

@@ -3,10 +3,10 @@ import SideBar from './SideBar'
 
 const Remove = () => {
   return (
-    <div>
-        <div>
-            <SideBar/>
-        </div>
+    <div className='max-h-[100vh] flex'>
+        
+            <SideBar />
+        
         <div>
             <div>
                 Delete your Notes
