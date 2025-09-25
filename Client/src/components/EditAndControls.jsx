@@ -1,7 +1,7 @@
 import React from 'react'
 import SideBar from './SideBar'
 
-const EditAndControls = () => {
+const Edit = () => {
   return (
     <div>
         <div>
@@ -49,4 +49,4 @@ const EditAndControls = () => {
   )
 }
 
-export default EditAndControls ;
+export default Edit ;

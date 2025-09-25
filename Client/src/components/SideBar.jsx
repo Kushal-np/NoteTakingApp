@@ -8,7 +8,7 @@ const SideBar = () => {
         
         {/* Upper section */}
         <div className="flex flex-col gap-6 items-center mt-10">
-          <Link to="/Mynotes" className="w-full">
+          <Link to="/" className="w-full">
             <div
               className="w-full py-4 text-zinc-200 text-sm font-light tracking-[0.1em] uppercase 
                          hover:text-white hover:bg-white/10 transition-all duration-300 
@@ -28,7 +28,7 @@ const SideBar = () => {
             </div>
           </Link>
 
-          <Link to="/EditAndControls" className="w-full">
+          <Link to="/Edit" className="w-full">
             <div
               className="w-full py-4 text-zinc-200 text-sm font-light tracking-[0.1em] uppercase 
                          hover:text-white hover:bg-white/10 transition-all duration-300 

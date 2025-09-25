@@ -1,7 +1,7 @@
 import React from 'react'
 import SideBar from './SideBar'
 
-const MyNotes = () => {
+const Notes = () => {
   return (
     <div>
         <div>
@@ -9,8 +9,8 @@ const MyNotes = () => {
         </div>
         <div>
         <div>
-            {/* users name  */}
-            <div></div>
+            
+            <div>User's Notes</div>
             {/* sort by  */}
             <div></div>
         </div>
@@ -35,4 +35,4 @@ const MyNotes = () => {
   )
 }
 
-export default MyNotes
+export default Notes
