@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const SideBar = () => {
   return (
@@ -8,45 +8,25 @@ const SideBar = () => {
         
         {/* Upper section */}
         <div className="flex flex-col gap-6 items-center mt-10">
-          <Link to="/Notes" className="w-full">
-            <div
-              className="w-full py-4 text-zinc-200 text-sm font-light tracking-[0.1em] uppercase 
-                         hover:text-white hover:bg-white/10 transition-all duration-300 
-                         border-0 border-b border-transparent hover:border-white/20 bg-transparent text-center rounded-lg"
+          {[
+            { name: "My Notes", to: "/Notes" },
+            { name: "Create", to: "/CreateNotes" },
+            { name: "Edits and Controls", to: "/Edit" },
+            { name: "Remove", to: "/RemoveNotes" },
+          ].map((item, index) => (
+            <NavLink
+              key={index}
+              to={item.to}
+              className={({ isActive }) =>
+                `w-full py-4 text-sm font-light tracking-[0.1em] uppercase text-center rounded-lg transition-all duration-300 border-0 border-b 
+                 ${isActive 
+                    ? "bg-white/20 text-white border-white/20" 
+                    : "text-zinc-200 hover:text-white hover:bg-white/10 hover:border-white/20"}`
+              }
             >
-              My Notes
-            </div>
-          </Link>
-
-          <Link to="/CreateNotes" className="w-full">
-            <div
-              className="w-full py-4 text-zinc-200 text-sm font-light tracking-[0.1em] uppercase 
-                         hover:text-white hover:bg-white/10 transition-all duration-300 
-                         border-0 border-b border-transparent hover:border-white/20 bg-transparent text-center rounded-lg"
-            >
-              Create
-            </div>
-          </Link>
-
-          <Link to="/Edit" className="w-full">
-            <div
-              className="w-full py-4 text-zinc-200 text-sm font-light tracking-[0.1em] uppercase 
-                         hover:text-white hover:bg-white/10 transition-all duration-300 
-                         border-0 border-b border-transparent hover:border-white/20 bg-transparent text-center rounded-lg"
-            >
-              Edits and Controls
-            </div>
-          </Link>
-
-          <Link to="/RemoveNotes" className="w-full">
-            <div
-              className="w-full py-4 text-zinc-200 text-sm font-light tracking-[0.1em] uppercase 
-                         hover:text-white hover:bg-white/10 transition-all duration-300 
-                         border-0 border-b border-transparent hover:border-white/20 bg-transparent text-center rounded-lg"
-            >
-              Remove
-            </div>
-          </Link>
+              {item.name}
+            </NavLink>
+          ))}
         </div>
 
         {/* Lower section */}
