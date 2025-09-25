@@ -28,7 +28,7 @@ const SideBar = () => {
             </div>
           </Link>
 
-          <Link to="EditAndControls" className="w-full">
+          <Link to="/EditAndControls" className="w-full">
             <div
               className="w-full py-4 text-zinc-200 text-sm font-light tracking-[0.1em] uppercase 
                          hover:text-white hover:bg-white/10 transition-all duration-300 
