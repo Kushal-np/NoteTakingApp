@@ -1,8 +1,13 @@
 import React from 'react'
+import SideBar from './SideBar'
 
 const MyNotes = () => {
   return (
     <div>
+        <div>
+        <SideBar/>
+        </div>
+        <div>
         <div>
             {/* users name  */}
             <div></div>
@@ -24,6 +29,7 @@ const MyNotes = () => {
         </div>
         <div>
             Add new note ? <div>Create</div>
+        </div>
         </div>
     </div>
   )
