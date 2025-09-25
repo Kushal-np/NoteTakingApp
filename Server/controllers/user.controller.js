@@ -58,7 +58,6 @@ export const login = async (req, res) => {
       });
     }
 
-    console.log(process.env.JWT_SECRET_KEY)
     const token = jwt.sign(
       { id: user._id, username: user.username },
       process.env.JWT_SECRET_KEY,
@@ -75,8 +74,8 @@ export const login = async (req, res) => {
       success: true,
       message: "Login successful",
       token
-      
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -85,6 +84,7 @@ export const login = async (req, res) => {
     });
   }
 };
+
 
 export const logout = async (req, res) => {
   res.clearCookie("token");
