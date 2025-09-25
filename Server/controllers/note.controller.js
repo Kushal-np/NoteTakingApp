@@ -2,9 +2,10 @@ import Note from "../model/note.model.js";
 
 export const createNote = async (req, res) => {
   try {
+    console.log("User in createNote:", req.user); // 👀 Check this
     const { title, content, tags } = req.body;
+console.log("Creating note with userId:", req.user.id);
 
-    // Create note
     const note = await Note.create({
       title,
       content,
@@ -12,7 +13,6 @@ export const createNote = async (req, res) => {
       userId: req.user.id
     });
 
-    // Send success response
     res.status(201).json({
       success: true,
       message: "Note created successfully",
@@ -26,19 +26,22 @@ export const createNote = async (req, res) => {
     });
   }
 };
+import mongoose from "mongoose";
 
-
-export const readNote = async(req, res)=>{
-    try{
-        const notes = await Note.find({userId: req.user.id});
-        res.json(notes);
-    }
-    catch(error){
-        return res.status(501).json({
-            error:"Error fetching notes"
-        })
-    }
-}
+export const readNote = async (req, res) => {
+  try {
+    const notes = await Note.find({
+      userId: new mongoose.Types.ObjectId(req.user.id),
+    });
+    console.log("Found notes:", notes);
+    res.json(notes);
+  } catch (error) {
+    return res.status(501).json({
+      error: "Error fetching notes",
+      details: error.message,
+    });
+  }
+};
 
 export const updateNote = async(req , res) =>{
     try{
