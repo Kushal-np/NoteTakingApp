@@ -1,8 +1,12 @@
 import React from 'react'
+import SideBar from './SideBar'
 
 const Remove = () => {
   return (
     <div>
+        <div>
+            <SideBar/>
+        </div>
         <div>
             <div>
                 Delete your Notes
