@@ -8,7 +8,7 @@ import cors from "cors" ;
 const app = express();
 dotenv.config();
 app.use(cors({
-    origin:"http://localhost:5173" , 
+    origin:"https://notekeeper-xi.vercel.app/" , 
     credentials:true
 }))
 const PORT = process.env.PORT ; 
