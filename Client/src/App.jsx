@@ -15,8 +15,9 @@ const App= () =>{
       <Route path="/CreateNotes" element={<Create />}/>
       <Route path="/Edit" element={<Edit />}/>
       <Route path="/RemoveNotes" element={<Remove />}/>
-      <Route path="*" element={< Navigate to="/login"/>} />
-
+      <Route path="*" element={< Navigate to="/home"/>} />
+      <Route path ="/note/:id" element={<ViewPage />} />
+      <Route path="/home" element={<LandingPage/>} />
     </Routes>
   )
 }
@@ -26,5 +27,10 @@ import Create from './components/Create';
 import Remove from './components/Remove';
 import Edit from './components/EditAndControls';
 import Notes from './components/MyNotes';
+import ViewPage from './components/ViewPage';
+import LandingPage from './pages/LandingPage';
+import { changeFavicon } from './utils/changeFavIcon';
+
+changeFavicon('/favicon.png')
 
 export default App ; 

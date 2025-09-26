@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import SideBar from './SideBar';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
@@ -14,9 +14,6 @@ const Edit = () => {
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
-
-  // Force re-render trigger
-  const [updateTrigger, setUpdateTrigger] = useState(0);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -34,9 +31,17 @@ const Edit = () => {
         const res = await api.get("/note/read-note", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setNotes(res.data);
+        // Handle various response structures
+        const notesData = Array.isArray(res.data)
+          ? res.data
+          : Array.isArray(res.data.notes)
+          ? res.data.notes
+          : Array.isArray(res.data.data)
+          ? res.data.data
+          : [];
+        setNotes(notesData);
       } catch (err) {
-        console.log(err);
+        console.error(err);
         setError("An error occurred while fetching notes");
       } finally {
         setLoading(false);
@@ -46,119 +51,103 @@ const Edit = () => {
     fetchNotes();
   }, []);
 
-  // Select a note from the list
   const handleSelect = (note) => {
     setSelectedNoteId(note._id);
-    setTitle(note.title);
-    setContent(note.content);
+    setTitle(note.title || "");
+    setContent(note.content || "");
     setTags(note.tags ? note.tags.join(", ") : "");
   };
 
-  // Update the note live
   const handleUpdate = async (e) => {
-  e.preventDefault();
-  if (!selectedNoteId) return;
+    e.preventDefault();
+    if (!selectedNoteId) return;
 
-  const token = localStorage.getItem("token");
-  try {
-    // Call API
-    const res = await api.put(
-      `/note/update-note/${selectedNoteId}`,
-      {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await api.put(
+        `/note/update-note/${selectedNoteId}`,
+        {
+          title,
+          content,
+          tags: tags.split(",").map(t => t.trim()),
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const updatedNote = {
+        ...notes.find(note => note._id === selectedNoteId),
         title,
         content,
         tags: tags.split(",").map(t => t.trim()),
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+        updatedAt: new Date().toISOString()
+      };
 
-    console.log("API Response:", res.data); // DEBUG LINE
-
-    // Always update state regardless of API response structure
-    const updatedNote = {
-      ...notes.find(note => note._id === selectedNoteId),
-      title,
-      content,
-      tags: tags.split(",").map(t => t.trim()),
-      updatedAt: new Date().toISOString()
-    };
-
-    console.log("Updated Note:", updatedNote); // DEBUG LINE
-
-    // Update notes array immutably
-    const newNotes = notes.map(note =>
-      note._id === selectedNoteId ? updatedNote : note
-    );
-    
-    console.log("New Notes Array:", newNotes); // DEBUG LINE
-    setNotes(newNotes);
-
-    // Force component re-render
-    setUpdateTrigger(prev => prev + 1);
-
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 3000);
-
-  } catch (err) {
-    console.error(err);
-    alert("Error updating note: " + err.message);
-  }
-};
-
+      const newNotes = notes.map(note =>
+        note._id === selectedNoteId ? updatedNote : note
+      );
+      
+      setNotes(newNotes);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      console.error(err);
+      setError("Error updating note: " + (err.message || "Unknown error"));
+      setTimeout(() => setError(""), 3000);
+    }
+  };
 
   return (
-    <div className='min-h-screen flex bg-white'>
+    <div className="min-h-screen flex bg-black text-white">
       <SideBar />
-      <div className='flex-1 flex flex-col w-full max-h-screen'>
-        <div className='p-4 sm:p-6 border-b border-gray-200 bg-white text-black flex-shrink-0 shadow-sm'>
-          <h1 className='text-2xl sm:text-3xl font-bold text-center'>
-            Edits and Controls
+      
+      <div className="flex-1 flex flex-col w-full max-h-screen">
+        <div className="p-6 sm:p-8 border-b border-white bg-black text-white flex-shrink-0 shadow-[0_4px_12px_rgba(255,255,255,0.1)]">
+          <h1 className="text-3xl font-extrabold text-center tracking-tight">
+            Edit Your Notes
           </h1>
         </div>
 
-        {/* Edit Form */}
-        <div className='flex-1 p-4 md:p-8 bg-gray-50 overflow-y-auto hide-scrollbar'>
-          <div className='max-w-4xl mx-auto space-y-8'>
-            <h2 className='text-2xl font-bold text-gray-800 pt-4 border-t border-gray-300'>Edit Post:</h2>
+        <div className="flex-1 p-4 md:p-8 bg-black overflow-y-auto hide-scrollbar">
+          <div className="max-w-4xl mx-auto space-y-8">
+            
+            <h2 className="text-2xl font-bold text-white pt-4 border-t border-white/50">
+              Edit Note: <span className="text-green-500">{selectedNoteId ? title : 'Select a Note Below'}</span>
+            </h2>
 
-            <form className='bg-white border border-gray-200 rounded-lg p-6 sm:p-8 shadow-md space-y-6' onSubmit={handleUpdate}>
+            <form 
+              className="bg-black border border-white/50 rounded-xl p-6 sm:p-8 shadow-[0_4px_12px_rgba(255,255,255,0.1)] space-y-6" 
+              onSubmit={handleUpdate}
+            >
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>Note Title</label>
+                <label className="block text-sm font-medium text-white mb-2">Note Title</label>
                 <input
                   type="text"
-                  placeholder='Enter the title'
+                  placeholder="Enter the title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black'
+                  className="w-full px-4 py-3 border border-white/50 bg-black text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors disabled:opacity-50"
+                  disabled={!selectedNoteId}
                 />
               </div>
 
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>Note Content</label>
+                <label className="block text-sm font-medium text-white mb-2">Note Content</label>
                 <textarea
                   rows="6"
-                  placeholder='Enter the body'
+                  placeholder="Enter the body"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black resize-y min-h-[150px]'
+                  className="w-full px-4 py-3 border border-white/50 bg-black text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-y min-h-[150px] transition-colors disabled:opacity-50"
+                  disabled={!selectedNoteId}
                 ></textarea>
               </div>
 
-              <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>Tags (Optional)</label>
-                <input
-                  type="text"
-                  placeholder='Tags (comma separated)'
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                  className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black'
-                />
-              </div>
 
-              <div className='pt-2'>
+
+              <div className="pt-2">
                 <button
                   type="submit"
-                  className='w-full sm:w-auto px-8 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors'
+                  className="w-full sm:w-auto px-8 py-3 bg-white text-black rounded-lg font-semibold hover:bg-white/90 transition-colors shadow-[0_4px_12px_rgba(255,255,255,0.2)] disabled:bg-white/20 disabled:text-white/50 disabled:shadow-none"
                   disabled={!selectedNoteId}
                 >
                   Update Note
@@ -166,26 +155,25 @@ const Edit = () => {
               </div>
             </form>
 
-            {/* Notes List */}
-            <div className="flex-1 p-4 md:p-6 bg-gray-50 overflow-y-auto">
-              {loading && <p className="text-gray-600 text-center">Loading notes...</p>}
-              {error && <p className="text-red-500 text-center">{error}</p>}
-              {success && <p className='text-green-600 text-center mb-2'>Updated successfully!</p>}
+            <div className="flex-1 p-4 md:p-6 bg-black -mx-4 -mb-8">
+              {loading && <p className="text-white text-center border border-white rounded-lg p-3">Loading notes...</p>}
+              {error && <p className="text-white text-center p-3 bg-black border-2 border-white rounded-lg">{error}</p>}
+              {success && <p className="text-green-300 text-center p-3 bg-black border-2 border-white rounded-lg mb-4">Updated successfully! </p>}
+              
               {!loading && !error && notes.length === 0 && (
-                <p className="text-gray-600 text-center mt-6">No notes available</p>
+                <p className="text-white text-center mt-6 p-4 bg-black border border-white rounded-lg">No notes available for editing.</p>
               )}
 
               <div className="grid gap-4 mt-4">
-                {notes.slice().sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).map((note) => (
+                {notes.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((note) => (
                   <div
                     key={note._id}
-                    className={`bg-white border border-gray-200 rounded-lg shadow-sm p-4 cursor-pointer 
-                    ${selectedNoteId === note._id ? "border-black" : "hover:border-gray-400"} transition-colors`}
+                    className={`bg-black border-2 rounded-xl shadow-[0_4px_12px_rgba(255,255,255,0.1)] p-4 cursor-pointer hover:shadow-md transition-all duration-300 ease-in-out 
+                    ${selectedNoteId === note._id ? "border-green-500 bg-green-900 shadow-lg ring-2 ring-red-500/50" : "border-white/50 hover:border-white/70 hover:bg-white/10"}`}
                     onClick={() => handleSelect(note)}
                   >
-                    <div className="text-lg font-semibold">{note.title}</div>
-                    <p className="text-gray-600 text-sm truncate">{note.content}</p>
-                    <p className="text-gray-600 text-sm">{note.tags && note.tags.length > 0 ? note.tags.join(", ") : ""}</p>
+                    <div className="text-xl font-bold text-white truncate">{note.title}</div>
+
                   </div>
                 ))}
               </div>

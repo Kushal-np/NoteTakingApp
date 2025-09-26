@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import api from '../services/api'
 
 const Login = () => {
@@ -17,7 +17,6 @@ const Login = () => {
     try {
       const res = await api.post("/auth/login", { username, password })
       localStorage.setItem("token", res.data.token)
-      console.log(res.data.token)
       navigate("/dashboard")
     } catch (error) {
       setError(error.response?.data?.message || "Login failed")
@@ -27,18 +26,15 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center px-6">
+    <div className="min-h-screen bg-black flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-2xl font-light text-stone-900 tracking-wide uppercase">Login</h2>
-          <div className="w-6 h-px bg-stone-900 mx-auto mt-4"></div>
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-light text-white tracking-wide uppercase">Login</h2>
+          <div className="w-6 h-px bg-blue-500 mx-auto mt-4"></div>
         </div>
 
-        {/* Form */}
-        <div className="bg-white/80 backdrop-blur-sm shadow-md rounded-lg px-6 py-8">
+        <div className="bg-black/80 backdrop-blur-sm shadow-[0_8px_24px_rgba(255,255,255,0.1)] rounded-lg px-6 py-8 border border-white/20">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Username */}
             <div className="group relative">
               <input
                 type="text"
@@ -46,20 +42,19 @@ const Login = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
-                className="w-full px-0 py-3 border-0 border-b border-stone-300 bg-transparent text-sm text-stone-900 placeholder-transparent focus:outline-none focus:border-stone-600 peer"
+                className="w-full px-0 py-3 border-0 border-b border-white/30 bg-transparent text-lg text-white placeholder-transparent focus:outline-none focus:border-blue-500 peer"
                 placeholder="Username"
               />
               <label
                 htmlFor="username"
-                className="absolute left-0 -top-2 text-stone-500 text-xs tracking-wider transition-all duration-300
-                  peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-stone-400
-                  peer-focus:-top-2 peer-focus:text-xs peer-focus:text-stone-600"
+                className="absolute left-0 -top-2 text-white/70 text-sm tracking-wider transition-all duration-300
+                  peer-placeholder-shown:top-3 peer-placeholder-shown:text-lg peer-placeholder-shown:text-white/50
+                  peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-400"
               >
                 Username
               </label>
             </div>
 
-            {/* Password */}
             <div className="group relative">
               <input
                 type="password"
@@ -67,26 +62,25 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
-                className="w-full px-0 py-3 border-0 border-b border-stone-300 bg-transparent text-sm text-stone-900 placeholder-transparent focus:outline-none focus:border-stone-600 peer"
+                className="w-full px-0 py-3 border-0 border-b border-white/30 bg-transparent text-lg text-white placeholder-transparent focus:outline-none focus:border-blue-500 peer"
                 placeholder="Password"
               />
               <label
                 htmlFor="password"
-                className="absolute left-0 -top-2 text-stone-500 text-xs tracking-wider transition-all duration-300
-                  peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-stone-400
-                  peer-focus:-top-2 peer-focus:text-xs peer-focus:text-stone-600"
+                className="absolute left-0 -top-2 text-white/70 text-sm tracking-wider transition-all duration-300
+                  peer-placeholder-shown:top-3 peer-placeholder-shown:text-lg peer-placeholder-shown:text-white/50
+                  peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-400"
               >
                 Password
               </label>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-stone-900 text-white py-3 text-sm font-medium tracking-widest uppercase
-                hover:bg-stone-800 disabled:bg-stone-300 transition-all duration-300 rounded-md
-                flex items-center justify-center"
+              className="w-full bg-blue-500/20 text-white py-3 text-lg font-medium tracking-widest uppercase
+                hover:bg-blue-500 disabled:bg-white/10 transition-all duration-300 rounded-md
+                flex items-center justify-center shadow-[0_4px_12px_rgba(59,130,246,0.2)] hover:shadow-[0_6px_18px_rgba(59,130,246,0.3)]"
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
@@ -99,7 +93,6 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Error */}
           {error && (
             <div className="mt-6 text-center">
               <p className="text-red-500 text-sm font-light">{error}</p>
@@ -107,16 +100,17 @@ const Login = () => {
           )}
         </div>
 
-        {/* Footer */}
         <div className="text-center mt-8">
-          <p className="text-xs text-stone-500">
-            <span className="hover:underline cursor-pointer">Forgot password?</span>
+          <p className="text-xs text-white/50">
+            <span className="hover:text-blue-400 cursor-pointer">Forgot password?</span>
           </p>
-          <p className="mt-2 text-xs text-stone-500">
+          <p className="mt-2 text-xs text-white/50">
             New here?{" "}
-            <span className="text-stone-900 font-medium hover:underline cursor-pointer">
+            <Link to="/signup">
+            <span className="text-blue-400 font-medium hover:underline cursor-pointer" onClick={() => navigate("/register")}>
               Create account
             </span>
+</Link>
           </p>
         </div>
       </div>
