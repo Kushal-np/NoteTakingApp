@@ -19,11 +19,12 @@ export const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({
-      username,
-      email,
-      password: hashedPassword
-    });
+const user = await User.create({
+  username: username || email.split('@')[0],
+  email,
+  password: hashedPassword
+});
+
 
     res.status(201).json({
       success: true,
@@ -94,3 +95,19 @@ export const logout = async (req, res) => {
   });
 };
 
+export const getCurrentUser = async(req,res)=>{
+  try{
+    const user = await User.findById(req.user.id).select("username email");
+    if(!user){
+      return res.status(404).json({
+        error:"User not found"
+      })
+    }
+    res.json(user);
+  }
+  catch(error){
+    res.status(500).json({
+      error:"Server error"
+    })
+  }
+}

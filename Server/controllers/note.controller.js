@@ -69,26 +69,26 @@ catch(error){
 }
 }
 
-export const deleteNote = async(req , res)=>{
-    try{
-        const {id} = req.params ; 
-        const note = await Note.findOneAndDelete({_id:id,userId:req.user.id})
-        console.log(note)
-        if(!note){
-            return res.status(404).json({
-                error:"Note not found"
-            })
-        }
-        else{
-            res.json({
-                message:"Note deleted"
-            })
-        }
 
+export const deleteNote = async (req, res) => {
+  try {
+    const { ids } = req.body; // array of note IDs
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: "No note IDs provided" });
     }
-    catch(error){   
-        res.status(500).json({
-            error:"Error deleting note"
-        })
+
+    const result = await Note.deleteMany({
+      _id: { $in: ids },
+      userId: req.user.id,
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "No notes found for deletion" });
     }
-}
+
+    res.json({ message: `${result.deletedCount} note(s) deleted` });
+  } catch (error) {
+    console.error("Delete note error:", error);
+    res.status(500).json({ error: "Error deleting notes" });
+  }
+};
